@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ZustandTypes} from '@src/types';
+import {DEFAULT_ACCOUNT, DEFAULT_SETTING, ZustandTypes} from '@src/types';
 import create from 'zustand';
 import {devtools, persist} from 'zustand/middleware';
 
-export const useStore = create<ZustandTypes>(
+const useStore = create<ZustandTypes>(
   devtools(
     persist(
       (set, get) => ({
@@ -11,14 +11,23 @@ export const useStore = create<ZustandTypes>(
         bears: 0,
         increasePopulation: n => set(state => ({bears: state.bears + n})),
         removeAllBears: () => set({bears: 0}),
+        /** 自定义 */
+        account: DEFAULT_ACCOUNT,
+        mergeAccount: account => set({account}),
+        clearAccount: () => set({account: DEFAULT_ACCOUNT}),
+        setting: DEFAULT_SETTING,
+        mergeSetting: setting => set({setting}),
+        clearSetting: () => set({setting: DEFAULT_SETTING}),
       }),
       {
         name: 'Cached useStorage',
         getStorage: () => AsyncStorage,
         /** 白名单 */
-        partialize: state => ({bears: state.bears}),
+        partialize: state => ({bears: state.bears, account: state.account}),
       },
     ),
     {anonymousActionType: 'useStore.action'},
   ),
 );
+
+export {useStore};

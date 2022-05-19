@@ -1,10 +1,10 @@
 import React from 'react';
 import {AppRegistry, StatusBar, View} from 'react-native';
-import {useStore} from './useStore';
 import createContext from 'zustand/context';
-import App from './App';
 // @ts-ignore
 import {name as appName} from './app.json';
+import Stacks from './Stacks';
+import {useStore} from './useStore';
 
 const StoreContext = createContext();
 
@@ -15,7 +15,7 @@ const iPhone14: React.FC<iPhone14Props> = props => {
     <StoreContext.Provider createStore={() => useStore}>
       <View style={{flex: 1}}>
         <StatusBar translucent={true} barStyle="dark-content" />
-        <App />
+        <Stacks />
         {/* <View style={{height: useHomeIndicatorHeight()}} /> */}
       </View>
     </StoreContext.Provider>

@@ -22,7 +22,6 @@
           // "@images": "./src/images/",
           // "@pages": "./src/pages/",
           // "@types": "./src/types/",
-          // "@zustand": "./src/zustand/"
           "@src": "./src",
           "@root": "./"
         }

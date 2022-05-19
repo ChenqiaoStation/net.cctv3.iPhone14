@@ -3,6 +3,7 @@ import React from 'react';
 import {Image, View, Text} from 'react-native';
 
 interface HelloWorldProps {}
+
 const HelloWorld: React.FC<HelloWorldProps> = props => {
   return (
     <View style={{alignItems: 'center'}}>
