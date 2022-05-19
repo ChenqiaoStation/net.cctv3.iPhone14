@@ -18,6 +18,7 @@
       // "@types/*": ["./src/types/*"],
       // "@zustand/*": ["./src/zustand/*"]
       "@src/*": ["./src/*"],
+      "@root/*": ["./*"]
     }
   },
   "exclude": [

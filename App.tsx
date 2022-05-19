@@ -1,4 +1,5 @@
 // import {useStore} from '@src/zustand';
+import HelloWorld from '@src/components/HelloWorld';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useStore} from './useStore';
@@ -19,7 +20,7 @@ const App: React.FC<AppProps> = () => {
         <Text>Zustand 🐻</Text>
       </TouchableOpacity>
       <View style={{height: 12}} />
-      <Text>{bears}</Text>
+      <HelloWorld />
     </View>
   );
 };

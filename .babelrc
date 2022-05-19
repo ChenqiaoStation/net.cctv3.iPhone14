@@ -4,7 +4,7 @@
     [
       "module-resolver",
       {
-        "root": ["./src"],
+        "root": ["./"],
         "extensions": [
           ".ios.ts",
           ".android.ts",
@@ -23,7 +23,8 @@
           // "@pages": "./src/pages/",
           // "@types": "./src/types/",
           // "@zustand": "./src/zustand/"
-          "@src": "./src/"
+          "@src": "./src",
+          "@root": "./"
         }
       }
     ]
