@@ -1,37 +1,88 @@
-// import {useStore} from '@src/zustand';
-import {useNavigation} from '@react-navigation/native';
-import HelloWorld from '@src/components/HelloWorld';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import BottomTab from '@src/components/BottomTab';
+import Debug from '@src/screens/Debug';
+import {useDip} from '@src/utils';
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {RootStacksProp} from './Stacks';
-import {useStore} from './useStore';
+import {StyleSheet, View} from 'react-native';
 
+import {RootStacksProp} from './Stacks';
+
+const Tab = createBottomTabNavigator();
 interface AppProps {
-  navigation?: RootStacksProp;
+  navigation: RootStacksProp;
 }
 
-const App: React.FC<AppProps> = props => {
-  const [bears, increasePopulation] = useStore(state => [
-    state.bears,
-    state.increasePopulation,
-  ]);
+const tabs = [
+  {
+    name: '首页',
+    screen: Debug,
+    icon: require('@src/images/menu_global.png'),
+  },
+  {
+    name: '社区',
+    screen: Debug,
+    icon: require('@src/images/menu_message.png'),
+  },
+  {
+    name: '书屋',
+    screen: Debug,
+    icon: require('@src/images/menu_book.png'),
+  },
+  {
+    name: '视频',
+    screen: Debug,
+    icon: require('@src/images/menu_player.png'),
+  },
+  {
+    name: '我的',
+    screen: Debug,
+    icon: require('@src/images/menu_i.png'),
+  },
+];
 
-  const {navigation} = props;
+const App: React.FC<AppProps> = props => {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <TouchableOpacity
-        onPress={() => {
-          increasePopulation(1);
-          navigation.navigate('Debug', {id: Math.random().toString()});
+    <View
+      style={{
+        flex: 1,
+      }}>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
         }}>
-        <Text>Zustand 🐻</Text>
-      </TouchableOpacity>
-      <View style={{height: 12}} />
-      <HelloWorld />
+        {Array.from(tabs, (_, i) => (
+          <Tab.Screen
+            key={i}
+            name={tabs[i].name}
+            component={tabs[i].screen}
+            options={{
+              tabBarLabel: tabs[i].name,
+              tabBarBadge: Math.ceil(100 * Math.random()),
+              tabBarButton: bottomTabBarButtonProps => (
+                <BottomTab
+                  {...bottomTabBarButtonProps}
+                  item={_}
+                  activeColor={'#987123'}
+                  index={i}
+                />
+              ),
+            }}
+          />
+        ))}
+      </Tab.Navigator>
     </View>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  viewTabBarStyle: {
+    height: useDip(56),
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    borderRadius: 12,
+  },
+});
 
 export default App;

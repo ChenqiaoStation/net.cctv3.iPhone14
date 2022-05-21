@@ -1,3 +1,6 @@
+import {JSXElementConstructor, ReactElement} from 'react';
+import { ImageRequireSource } from 'react-native';
+
 /** TYPES */
 export interface Account {
   id: string;
@@ -6,6 +9,16 @@ export interface Account {
 export interface Setting {
   theme: string;
 }
+
+/** BottomTabBarProps */
+export type BottomTabItem = {
+  name: string;
+  screen: any;
+  icon: ImageRequireSource;
+};
+
+/** `FlatList` 源码 `ReactNode` 类型 */
+export type AnyView = ReactElement<any, string | JSXElementConstructor<any>>;
 
 export interface ZustandTypes {
   /** Zustand 默认 */

@@ -20,12 +20,8 @@ export default function Stacks() {
   return (
     <NavigationContainer>
       <RootStack.Navigator
-        screenOptions={{animation: 'slide_from_right'}}>
-        <RootStack.Screen
-          name="App"
-          component={App}
-          options={{title: '测试页面'}}
-        />
+        screenOptions={{animation: 'slide_from_right', headerShown: false}}>
+        <RootStack.Screen name="App" component={App} />
         <RootStack.Screen name="Debug" component={Debug} />
       </RootStack.Navigator>
     </NavigationContainer>
