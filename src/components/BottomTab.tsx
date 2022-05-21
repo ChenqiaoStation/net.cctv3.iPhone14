@@ -44,20 +44,11 @@ const BottomTab: React.FC<BottomTabProps & BottomTabBarButtonProps> = props => {
   }, [selected]);
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={[styles.viewTab, selected ? {flex: 1} : {flex: 0.618}]}>
+    <TouchableOpacity onPress={onPress} style={[styles.viewTab, {flex: 1}]}>
       <Animatable.View
         ref={tabRef}
         style={[
-          {flexDirection: 'row', alignItems: 'center'},
-          selected && {
-            backgroundColor: colors[index].light,
-            paddingHorizontal: 12,
-            paddingVertical: 6,
-            borderRadius: 8,
-            justifyContent: 'center',
-          },
+          {alignItems: 'center'},
         ]}
         useNativeDriver={true}>
         <Image
@@ -68,17 +59,15 @@ const BottomTab: React.FC<BottomTabProps & BottomTabBarButtonProps> = props => {
             tintColor: selected ? colors[index].dark : '#666',
           }}
         />
+        <View style={{height: useDip(4)}} />
         <Animatable.View ref={textRef} useNativeDriver={true}>
-          {selected && (
-            <Text
-              style={{
-                fontSize: useDip(16),
-                color: colors[index].dark,
-                marginLeft: 6,
-              }}>
-              {item.name}
-            </Text>
-          )}
+          <Text
+            style={{
+              fontSize: useDip(10),
+              color: selected ? colors[index].dark : '#999',
+            }}>
+            {item.name}
+          </Text>
         </Animatable.View>
       </Animatable.View>
     </TouchableOpacity>

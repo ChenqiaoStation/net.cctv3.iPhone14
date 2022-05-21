@@ -16,11 +16,15 @@ const iPhone14: React.FC<iPhone14Props> = props => {
     console.log({DocumentPath: RNFS.DocumentDirectoryPath});
     return function () {};
   }, [props]);
-  
+
   return (
     <StoreContext.Provider createStore={() => useStore}>
       <View style={{flex: 1}}>
-        <StatusBar translucent={true} barStyle="dark-content" />
+        <StatusBar
+          translucent={true}
+          barStyle="dark-content"
+          backgroundColor={'transparent'}
+        />
         <Stacks />
         {/* <View style={{height: useHomeIndicatorHeight()}} /> */}
       </View>

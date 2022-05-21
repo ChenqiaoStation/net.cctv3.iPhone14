@@ -2,11 +2,16 @@ import {Dimensions, Platform, StatusBar} from 'react-native';
 
 /**
  * 屏幕适配暂时的方案
+ * - `iOS`: `pt`
+ * - `Android`: `dip`
  * @param px
  * @returns
  */
 const useDip = (px: number) =>
-  Math.floor((px * Dimensions.get('screen').width) / 375);
+  Platform.select({
+    android: px,
+    ios: Math.round((px * Dimensions.get('screen').width) / 375),
+  });
 
 /**
  * 是不是刘海屏
@@ -57,10 +62,33 @@ const useGoogleColors = {
   grey: {name: '玄灰', dark: '#8899a7', light: '#eaebf1'},
 };
 
+/**
+ * 阴影
+ * @param shadowColor
+ * @param shadowOffset
+ * @param shadowOpacity
+ * @param elevation
+ * @returns
+ */
+const useShadowStyle = (
+  shadowColor?: string,
+  shadowOffset?: {width: number; height: number},
+  shadowOpacity?: number,
+  elevation?: number,
+) => {
+  return {
+    shadowColor: shadowColor ?? '#000',
+    shadowOffset: shadowOffset ?? {width: 0, height: 1},
+    shadowOpacity: shadowOpacity ?? 0.1,
+    elevation: elevation ?? 4,
+  };
+};
+
 export {
   useDip,
   isiPhoneXSMax,
   useHomeIndicatorHeight,
   useStatusBarHeight,
   useGoogleColors,
+  useShadowStyle
 };
