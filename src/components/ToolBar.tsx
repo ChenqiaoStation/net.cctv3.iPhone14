@@ -11,14 +11,13 @@ interface ToolBarProps {
 }
 
 const ToolBar: React.FC<ToolBarProps> = props => {
+  const {title, onBackPress, moreView} = props;
   const [bears, increasePopulation, setting] = useStore(state => [
     state.bears,
     state.increasePopulation,
     state.setting,
   ]);
-
-  const {title, onBackPress, moreView} = props;
-
+  
   return (
     <>
       <View
