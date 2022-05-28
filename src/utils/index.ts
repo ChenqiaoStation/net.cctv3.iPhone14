@@ -1,3 +1,6 @@
+import {Log} from '@src/types';
+import moment from 'moment';
+import {customAlphabet} from 'nanoid';
 import {Dimensions, Platform, StatusBar} from 'react-native';
 
 /**
@@ -84,11 +87,39 @@ const useShadowStyle = (
   };
 };
 
+/**
+ * UUID
+ * @param length 默认 32 位
+ */
+const useUUID = (length?: number) => {
+  const ascii = (a: number, b: number) => String.fromCharCode(a + b);
+  const idBuilder = customAlphabet(
+    Array.from({length: 10}, (_, i) => i.toString())
+      .concat(
+        Array.from({length: 26}, (_, i) => `${ascii(i, 65)}${ascii(i, 97)}`),
+      )
+      .join(''),
+    length || 32,
+  );
+  return idBuilder();
+};
+
+/**
+ * 日期格式化
+ * @param time 默认当前时间
+ * @param format 时间格式
+ * @returns
+ */
+const useTimeFormatter = (time?: string, format?: string) =>
+  (time ? moment(time) : moment()).format(format || 'YYYY-MM-DD HH:mm:ss');
+
 export {
   useDip,
   isiPhoneXSMax,
   useHomeIndicatorHeight,
   useStatusBarHeight,
   useGoogleColors,
-  useShadowStyle
+  useShadowStyle,
+  useUUID,
+  useTimeFormatter,
 };

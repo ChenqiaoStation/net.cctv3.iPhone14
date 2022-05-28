@@ -4,6 +4,7 @@ import {useStore} from '@root/useStore';
 import ToolBar from '@src/components/ToolBar';
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
+import {useUUID} from '../../utils';
 
 interface DebugProps {
   navigation?: RootStacksProp;
@@ -12,9 +13,10 @@ interface DebugProps {
 
 const Debug: React.FC<DebugProps> = props => {
   const {route, navigation} = props;
-  const [bears, increasePopulation] = useStore(state => [
+  const [bears, increasePopulation, mergeLogs] = useStore(state => [
     state.bears,
     state.increasePopulation,
+    state.mergeLogs,
   ]);
 
   return (
@@ -29,6 +31,8 @@ const Debug: React.FC<DebugProps> = props => {
         <TouchableOpacity
           onPress={() => {
             increasePopulation(1);
+            // console.log({useUUID: useUUID()});
+            mergeLogs({title: 'useUUID', message: useUUID()});
           }}>
           <Image source={require('@src/images/HelloWorld.png')} />
         </TouchableOpacity>

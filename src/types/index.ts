@@ -1,5 +1,5 @@
 import {JSXElementConstructor, ReactElement} from 'react';
-import { ImageRequireSource } from 'react-native';
+import {ImageRequireSource} from 'react-native';
 
 /** TYPES */
 export interface Account {
@@ -8,6 +8,13 @@ export interface Account {
 
 export interface Setting {
   theme: string;
+}
+
+export interface Log {
+  id?: string;
+  title: string;
+  message: string;
+  time?: string;
 }
 
 /** BottomTabBarProps */
@@ -20,7 +27,7 @@ export type BottomTabItem = {
 /** `FlatList` 源码 `ReactNode` 类型 */
 export type AnyView = ReactElement<any, string | JSXElementConstructor<any>>;
 
-export interface ZustandTypes {
+export interface useZustand {
   /** Zustand 默认 */
   bears: number;
   increasePopulation: (n: number) => void;
@@ -32,6 +39,10 @@ export interface ZustandTypes {
   setting: Setting;
   mergeSetting: (setting: Setting) => void;
   clearSetting: () => void;
+  /** 日志 */
+  logs: Log[];
+  mergeLogs: (log: Log) => void;
+  clearLogs: () => void;
 }
 
 /** DEFAULT_DATAS */
