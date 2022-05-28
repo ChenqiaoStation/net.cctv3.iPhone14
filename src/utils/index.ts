@@ -113,6 +113,118 @@ const useUUID = (length?: number) => {
 const useTimeFormatter = (time?: string, format?: string) =>
   (time ? moment(time) : moment()).format(format || 'YYYY-MM-DD HH:mm:ss');
 
+/**
+ *
+ * @param array 数据源
+ * @param sort 1: 升序 -1: 降序
+ * @param keyOfTime
+ */
+const useSortedByTime = (array: any[], sort?: 1 | -1, keyOfTime?: string) => {
+  const key = keyOfTime || 'time';
+  const s = sort ?? -1;
+  return array.sort((a, b) =>
+    moment(a[key]).isAfter(moment(b[key])) ? s : -s,
+  );
+};
+
+const useMomentChinaConfig = {
+  months: '一二三四五六七八九十'
+    .split('')
+    .concat(['十一', '十二'])
+    .map(it => `${it}月`),
+  monthsShort: Array.from({length: 10}, (_, i) => i + 1)
+    .concat([11, 12])
+    .map(it => `${it}月`),
+  weekdays: '日一二三四五六'.split('').map(it => `星期${it}`),
+  weekdaysShort: '日一二三四五六'.split('').map(it => `周${it}`),
+  weekdaysMin: '日一二三四五六'.split(''),
+  longDateFormat: {
+    LT: 'HH:mm',
+    LTS: 'HH:mm:ss',
+    L: 'YYYY-MM-DD',
+    LL: 'YYYY年MM月DD日',
+    LLL: 'YYYY年MM月DD日Ah点mm分',
+    LLLL: 'YYYY年MM月DD日ddddAh点mm分',
+    l: 'YYYY-M-D',
+    ll: 'YYYY年M月D日',
+    lll: 'YYYY年M月D日 HH:mm',
+    llll: 'YYYY年M月D日dddd HH:mm',
+  },
+  meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
+  meridiemHour: function (hour, meridiem) {
+    if (hour === 12) {
+      hour = 0;
+    }
+    if (meridiem === '凌晨' || meridiem === '早上' || meridiem === '上午') {
+      return hour;
+    } else if (meridiem === '下午' || meridiem === '晚上') {
+      return hour + 12;
+    } else {
+      // '中午'
+      return hour >= 11 ? hour : hour + 12;
+    }
+  },
+  meridiem: function (hour, minute, isLower) {
+    const hm = hour * 100 + minute;
+    return hm < 600
+      ? '凌晨'
+      : hm < 900
+      ? '早上'
+      : hm < 1130
+      ? '上午'
+      : hm < 1230
+      ? '中午'
+      : hm < 1800
+      ? '下午'
+      : '晚上';
+  },
+  calendar: {
+    sameDay: '[今天]LT',
+    nextDay: '[明天]LT',
+    nextWeek: '[下]ddddLT',
+    lastDay: '[昨天]LT',
+    lastWeek: '[上]ddddLT',
+    sameElse: 'L',
+  },
+  dayOfMonthOrdinalParse: /\d{1,2}(日|月|周)/,
+  ordinal: function (number, period) {
+    switch (period) {
+      case 'd':
+      case 'D':
+      case 'DDD':
+        return number + '日';
+      case 'M':
+        return number + '月';
+      case 'w':
+      case 'W':
+        return number + '周';
+      default:
+        return number;
+    }
+  },
+  relativeTime: {
+    future: '%s内',
+    past: '%s前',
+    s: '几秒',
+    ss: '%d秒',
+    m: '1分钟',
+    mm: '%d分钟',
+    h: '1小时',
+    hh: '%d小时',
+    d: '1天',
+    dd: '%d天',
+    M: '1个月',
+    MM: '%d个月',
+    y: '1年',
+    yy: '%d年',
+  },
+  week: {
+    // GB/T 7408-1994《数据元和交换格式·信息交换·日期和时间表示法》与ISO 8601:1988等效
+    dow: 1, // Monday is the first day of the week.
+    doy: 4, // The week that contains Jan 4th is the first week of the year.
+  },
+};
+
 export {
   useDip,
   isiPhoneXSMax,
@@ -122,4 +234,6 @@ export {
   useShadowStyle,
   useUUID,
   useTimeFormatter,
+  useSortedByTime,
+  useMomentChinaConfig
 };

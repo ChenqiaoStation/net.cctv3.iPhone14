@@ -6,6 +6,8 @@ import {name as appName} from './app.json';
 import Stacks from './Stacks';
 import {useStore} from './useStore';
 import RNFS from 'react-native-fs';
+import moment from 'moment';
+import {useMomentChinaConfig} from '@src/utils';
 
 const StoreContext = createContext();
 
@@ -14,6 +16,8 @@ interface iPhone14Props {}
 const iPhone14: React.FC<iPhone14Props> = props => {
   useEffect(() => {
     console.log({DocumentPath: RNFS.DocumentDirectoryPath});
+    // @ts-ignore
+    moment.locale('zh-cn', useMomentChinaConfig);
     return function () {};
   }, [props]);
 
