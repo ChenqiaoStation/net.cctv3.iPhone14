@@ -8,6 +8,7 @@ import {useStore} from './useStore';
 import RNFS from 'react-native-fs';
 import moment from 'moment';
 import {useMomentChinaConfig} from '@src/utils';
+import {useHttp} from '@src/hooks';
 
 const StoreContext = createContext();
 
