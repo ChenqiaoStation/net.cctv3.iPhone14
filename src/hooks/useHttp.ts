@@ -5,6 +5,7 @@ interface useHttpProps {
   action: string;
   method?: 'POST' | 'GET';
   body?: object;
+  r?: number;
 }
 
 interface useHttpResult {
@@ -19,6 +20,7 @@ const useHttp = (props: useHttpProps) => {
     action,
     method = 'GET',
     body = Object.create(null),
+    r = 0,
   } = props;
 
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ const useHttp = (props: useHttpProps) => {
         });
     }
     return function () {};
-  }, []);
+  }, [r]);
 
   return {
     loading,

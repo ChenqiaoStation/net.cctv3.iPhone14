@@ -4,7 +4,7 @@ import {useStore} from '@root/useStore';
 import ToolBar from '@src/components/ToolBar';
 import {useHttp} from '@src/hooks';
 import {useUUID} from '@src/utils';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import Logs from './Logs';
 
@@ -22,10 +22,13 @@ const Debug: React.FC<DebugProps> = props => {
     state.mergeLogs,
   ]);
 
+  const [r, setR] = useState(0);
+
   const {loading, result} = useHttp({
     action: 'soul/selectSouls',
     body: {},
     method: 'GET',
+    r: r,
   });
 
   return (
@@ -52,6 +55,7 @@ const Debug: React.FC<DebugProps> = props => {
               increasePopulation(1);
               // console.log({useUUID: useUUID()});
               mergeLogs({title: 'useUUID', message: useUUID()});
+              setR(Math.random());
             }}>
             <Image source={require('@src/images/HelloWorld.png')} />
           </TouchableOpacity>
