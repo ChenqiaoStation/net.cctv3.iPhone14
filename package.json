@@ -45,5 +45,8 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "resolutions": {
+    "react-devtools-core": "4.24.6"
   }
 }

@@ -2,11 +2,12 @@
     package="com.iPhone14">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Android 11 以后，不用这个申请存储权限了，改为 `requestLegacyExternalStorage` -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    
+
     <application
         android:name="com.iPhone14.MainApplication"
         android:allowBackup="false"
@@ -22,12 +23,16 @@
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".newarchitecture.screens.HelloMISActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".newarchitecture.screens.MyWebViewActivity" />
+
         <provider
             android:name=".newarchitecture.modules.MyFileProvider"
             android:authorities="net.cctv3.iPhone14.MyFileProvider"
