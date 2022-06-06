@@ -14,22 +14,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.iPhone14.R;
 
-public class MyWebViewActivity extends AppCompatActivity {
-    private WebView mWebview;
+public class MyWebViewScreen extends AppCompatActivity {
+    private WebView webView = null;
     private WebSettings mWebSettings;
     private TextView beginLoading, endLoading, loading, mtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_web);
-        mWebview = (WebView) findViewById(R.id.web_web);
-        mWebSettings = mWebview.getSettings();
-        mWebview.loadUrl(getIntent().getStringExtra("url"));
+        setContentView(R.layout.screen_web);
+        webView = (WebView) findViewById(R.id.web_web);
+        mWebSettings = webView.getSettings();
+        webView.loadUrl(getIntent().getStringExtra("url"));
         mtitle = findViewById(R.id.web_title);
 
         // 设置不用系统浏览器打开,直接显示在当前 WebView
-        mWebview.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -38,7 +38,7 @@ public class MyWebViewActivity extends AppCompatActivity {
         });
 
         // 设置 WebChromeClient 类
-        mWebview.setWebChromeClient(new WebChromeClient() {
+        webView.setWebChromeClient(new WebChromeClient() {
             // 获取网站标题
             @Override
             public void onReceivedTitle(WebView view, String title) {
@@ -52,7 +52,7 @@ public class MyWebViewActivity extends AppCompatActivity {
         });
 
         // 设置 WebViewClient 类
-        mWebview.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
             // 设置加载前的函数
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -68,8 +68,8 @@ public class MyWebViewActivity extends AppCompatActivity {
     // 点击返回上一页面而不是退出浏览器
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mWebview.canGoBack()) {
-            mWebview.goBack();
+        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
+            webView.goBack();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -78,12 +78,12 @@ public class MyWebViewActivity extends AppCompatActivity {
     // 销毁 WebView
     @Override
     protected void onDestroy() {
-        if (mWebview != null) {
-            mWebview.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
-            mWebview.clearHistory();
-            ((ViewGroup) mWebview.getParent()).removeView(mWebview);
-            mWebview.destroy();
-            mWebview = null;
+        if (webView != null) {
+            webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            webView.clearHistory();
+            ((ViewGroup) webView.getParent()).removeView(webView);
+            webView.destroy();
+            webView = null;
         }
         super.onDestroy();
     }

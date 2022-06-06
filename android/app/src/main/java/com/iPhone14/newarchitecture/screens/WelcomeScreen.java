@@ -15,9 +15,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -29,9 +27,8 @@ import com.iPhone14.R;
 import com.iPhone14.newarchitecture.cache.SQLiteOpener;
 import com.iPhone14.newarchitecture.cache.SQLiteTypes;
 
-public class HelloMISActivity extends AppCompatActivity {
-    private AlertDialog onceDialog = null;
-    private AlertDialog twiceDialog = null;
+public class WelcomeScreen extends AppCompatActivity {
+    private AlertDialog welcomeDialog = null;
     private SQLiteDatabase db = null;
 
     /**
@@ -60,8 +57,8 @@ public class HelloMISActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Do something with URL here.
                 // System.out.println("Click HTML urlSpan: " + urlSpan.getURL());
-                Toast.makeText(HelloMISActivity.this, "Click HTML urlSpan: " + urlSpan.getURL(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(HelloMISActivity.this, MyWebViewActivity.class);
+                // Toast.makeText(HelloMISActivity.this, "Click HTML urlSpan: " + urlSpan.getURL(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(WelcomeScreen.this, MyWebViewScreen.class);
                 intent.putExtra("url", urlSpan.getURL());
                 startActivity(intent);
             }
@@ -83,26 +80,23 @@ public class HelloMISActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = View.inflate(this, R.layout.activity_hello_mis, null);
+        View view = View.inflate(this, R.layout.screen_welcome, null);
         db = new SQLiteOpener(this).getReadableDatabase();
         if (isHaveShownWelcomeScreen()) {
             // 之前显示过启动页了
-            Intent reactNativeIntent = new Intent(HelloMISActivity.this, MainActivity.class);
-            startActivity(reactNativeIntent);
+            Intent it = new Intent(WelcomeScreen.this, MainActivity.class);
+            //  禁止 ReactNative 页面回退到此页面
+            it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(it);
+            finish();
         } else {
-            view.findViewById(R.id.hello_mis_button).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onceDialog.show();
-                }
-            });
             // 第一次授权的弹窗
-            View onceView = View.inflate(this, R.layout.alert_secret_once, null);
-            TextView textTitle = onceView.findViewById(R.id.dialog_once_title);
+            View welcomeView = View.inflate(this, R.layout.alert_welcome, null);
+            TextView textTitle = welcomeView.findViewById(R.id.dialog_once_title);
             // 标题加粗
             textTitle.setTypeface(null, Typeface.BOLD);
             // 富文本
-            TextView messageText = onceView.findViewById(R.id.dialog_once_message);
+            TextView messageText = welcomeView.findViewById(R.id.dialog_once_message);
             messageText.setMovementMethod(LinkMovementMethod.getInstance());
             messageText.setText(
                     getClickableHtml("欢迎您使用采之汲。我们非常重视用户的隐私和个人信息保护。在您使用我们的服务时，我们将需要收集和使用您的个人信息。点击“同意”表示您同意和接受" +
@@ -113,18 +107,12 @@ public class HelloMISActivity extends AppCompatActivity {
                             "我们提醒您审慎阅读其中涉及您的责任和权利的黑体条款。")
             );
             AlertDialog.Builder onceBuilder = new AlertDialog.Builder(this)
-                    .setPositiveButton("同意", new MyDialogClicker("onceConfirm"))
-                    .setNegativeButton("不同意", new MyDialogClicker("onceCancel"))
-                    .setView(onceView);
-            onceDialog = onceBuilder.create();
-            // 第二次授权的弹窗
-            /**
-             AlertDialog.Builder twiceBuilder = new AlertDialog.Builder(this)
-             .setPositiveButton("我再看看", new MyDialogClicker("twiceConfirm"))
-             .setNegativeButton("狠心离开", new MyDialogClicker("twiceCancel"))
-             .setView(View.inflate(this, R.layout.alert_secret_twice, null));
-             twiceDialog = twiceBuilder.create();
-             */
+                    .setPositiveButton("同意", new MyDialogClicker(ScreenTypes.WELCOME_DIALOG_YES))
+                    .setNegativeButton("不同意", new MyDialogClicker(ScreenTypes.WELCOME_DIALOG_NO))
+                    .setView(welcomeView)
+                    .setCancelable(false);
+            welcomeDialog = onceBuilder.create();
+            welcomeDialog.show();
         }
         setContentView(view);
     }
@@ -139,18 +127,15 @@ public class HelloMISActivity extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (this.id) {
-                case "onceConfirm":
+                case ScreenTypes.WELCOME_DIALOG_YES:
                     db.execSQL("update nativeCaches set value = ? where id = ?", new Object[]{"1", SQLiteTypes.IS_SHOWN_WELCOME_SCREEN});
-                    Intent reactNativeIntent = new Intent(HelloMISActivity.this, MainActivity.class);
-                    startActivity(reactNativeIntent);
+                    Intent it = new Intent();
+                    it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    it.setClass(WelcomeScreen.this, MainActivity.class);
+                    startActivity(it);
+                    finish();
                     break;
-                case "onceCancel":
-                    twiceDialog.show();
-                    break;
-                case "twiceConfirm":
-                    onceDialog.show();
-                    break;
-                case "twiceCancel":
+                case ScreenTypes.WELCOME_DIALOG_NO:
                     Process.killProcess(Process.myPid());
                     break;
                 default:
