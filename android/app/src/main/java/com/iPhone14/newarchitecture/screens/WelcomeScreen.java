@@ -106,12 +106,12 @@ public class WelcomeScreen extends AppCompatActivity {
                             "。" +
                             "我们提醒您审慎阅读其中涉及您的责任和权利的黑体条款。")
             );
-            AlertDialog.Builder onceBuilder = new AlertDialog.Builder(this)
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this)
                     .setPositiveButton("同意", new MyDialogClicker(ScreenTypes.WELCOME_DIALOG_YES))
                     .setNegativeButton("不同意", new MyDialogClicker(ScreenTypes.WELCOME_DIALOG_NO))
                     .setView(welcomeView)
                     .setCancelable(false);
-            welcomeDialog = onceBuilder.create();
+            welcomeDialog = alertBuilder.create();
             welcomeDialog.show();
         }
         setContentView(view);
