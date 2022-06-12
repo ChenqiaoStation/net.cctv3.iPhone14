@@ -3,7 +3,6 @@ package com.iPhone14.newarchitecture.screens;
 import android.app.ActivityOptions;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -26,14 +25,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.iPhone14.MainActivity;
 import com.iPhone14.R;
-import com.iPhone14.newarchitecture.cache.SQLiteOpener;
-import com.iPhone14.newarchitecture.cache.SQLiteTypes;
+import com.iPhone14.newarchitecture.cache.SharedPreferenceUtils;
 
 public class WelcomeScreen extends AppCompatActivity {
     private AlertDialog welcomeDialog = null;
-    private SQLiteDatabase db = null;
     private Bundle slideAnimation = null;
     private Bundle fadeAnimation = null;
+    private SharedPreferenceUtils spu = null;
+
+    /** 隐私政策对话框 */
+    public static final String WELCOME_DIALOG_YES = "welcomeDialogYes";
+    public static final String WELCOME_DIALOG_NO = "welcomeDialogNo";
+
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -49,18 +52,9 @@ public class WelcomeScreen extends AppCompatActivity {
     /**
      * 是否同意过隐私政策
      */
-    private boolean isHaveShownWelcomeScreen() {
-        Cursor cursor = db.rawQuery("select * from nativeCaches where id = ?", new String[]{SQLiteTypes.IS_SHOWN_WELCOME_SCREEN});
-        String result = "";
-        if (cursor == null || cursor.getCount() == 0) {
-            // 没数据
-            db.execSQL("insert into nativeCaches values(?, ?)", new Object[]{SQLiteTypes.IS_SHOWN_WELCOME_SCREEN, "0"});
-        } else {
-            while (cursor.moveToNext()) {
-                result = cursor.getString(cursor.getColumnIndex("value"));
-            }
-        }
-        return result.equals("1");
+    private boolean isHaveAgreedWelcomeScreen() {
+        String isAgreed = spu.get(SharedPreferenceUtils.IS_AGREED_WELCOME_SCREEN);
+        return isAgreed.equals("1");
     }
 
     private void setLinkClickable(final SpannableStringBuilder clickableHtmlBuilder,
@@ -98,8 +92,7 @@ public class WelcomeScreen extends AppCompatActivity {
         slideAnimation = ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.screen_slide_in, R.anim.screen_slide_out).toBundle();
         // 渐入渐出的动画
         fadeAnimation = ActivityOptions.makeCustomAnimation(getApplicationContext(), R.anim.screen_fade_in, R.anim.screen_fade_out).toBundle();
-        db = new SQLiteOpener(this).getReadableDatabase();
-        if (isHaveShownWelcomeScreen()) {
+        if (isHaveAgreedWelcomeScreen()) {
             // 之前显示过启动页了，这个时候延时 1000ms，等页面完全呈现出来，然后跳转
             new Thread(new Runnable() {
                 @Override
@@ -129,8 +122,8 @@ public class WelcomeScreen extends AppCompatActivity {
                             "我们提醒您审慎阅读其中涉及您的责任和权利的对应条款。")
             );
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this)
-                    .setPositiveButton("同意", new MyDialogClicker(ScreenTypes.WELCOME_DIALOG_YES))
-                    .setNegativeButton("不同意", new MyDialogClicker(ScreenTypes.WELCOME_DIALOG_NO))
+                    .setPositiveButton("同意", new MyDialogClicker(WELCOME_DIALOG_YES))
+                    .setNegativeButton("不同意", new MyDialogClicker(WELCOME_DIALOG_NO))
                     .setView(welcomeView)
                     .setCancelable(false);
             welcomeDialog = alertBuilder.create();
@@ -142,6 +135,7 @@ public class WelcomeScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        spu = new SharedPreferenceUtils(this);
         View view = View.inflate(this, R.layout.screen_welcome, null);
         setContentView(view);
     }
@@ -156,15 +150,15 @@ public class WelcomeScreen extends AppCompatActivity {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (this.id) {
-                case ScreenTypes.WELCOME_DIALOG_YES:
-                    db.execSQL("update nativeCaches set value = ? where id = ?", new Object[]{"1", SQLiteTypes.IS_SHOWN_WELCOME_SCREEN});
+                case WELCOME_DIALOG_YES:
+                    spu.set(SharedPreferenceUtils.IS_AGREED_WELCOME_SCREEN, "1");
                     Intent it = new Intent();
                     it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     it.setClass(WelcomeScreen.this, MainActivity.class);
                     startActivity(it, slideAnimation);
                     finish();
                     break;
-                case ScreenTypes.WELCOME_DIALOG_NO:
+                case WELCOME_DIALOG_NO:
                     Process.killProcess(Process.myPid());
                     break;
                 default:

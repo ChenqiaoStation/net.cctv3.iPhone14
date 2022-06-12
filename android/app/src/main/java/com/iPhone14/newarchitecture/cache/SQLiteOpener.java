@@ -12,6 +12,9 @@ import androidx.annotation.RequiresApi;
 import org.jetbrains.annotations.NotNull;
 
 public class SQLiteOpener extends SQLiteOpenHelper {
+    /** isAgreedWelcomeScreen: 是否同意过 `Welcome` 页面的隐私协议 */
+    public static final String IS_AGREED_WELCOME_SCREEN = "isAgreedWelcomeScreen";
+
     public SQLiteOpener(Context context) {
         super(context, "MISCaches", null, 1);
     }
